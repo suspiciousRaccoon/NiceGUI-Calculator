@@ -6,16 +6,26 @@ import ast
 
 class Calculator:
     def __init__(self):
-        self.data = ''
+        self.data = '0'
+        self.memory = ''
+        self.default = True
         self.setup_gui()
 
     def add_data(self, data_to_add) -> None:
-        self.data += data_to_add
+        if all(x in ['*', '/', '%'] for x in [self.data[-1], data_to_add]):
+            # if self.data[-1] in ['*', '/', '%'] and data_to_add in ['*', '/', '%']:
+            return
+        elif self.default:
+            self.data = self.data.replace('0', data_to_add)
+            self.default = False
+        else:
+            self.data += data_to_add
         print(data_to_add, self.data)
 
     def remove_data(self, remove_all=None) -> None:
-        if remove_all:
-            self.data = ''
+        if remove_all or len(self.data) <= 1:
+            self.data = '0'
+            self.default = True
         else:
             self.data = self.data[:-1]
 
@@ -32,12 +42,14 @@ class Calculator:
         self.data = str(round(sqrt(self.data), 7))
         print(self.data, type(self.data))
 
+    def memory_clear(self):
+        self.memory = ''
+
     def setup_gui(self) -> None:
         with ui.card().classes('flex mx-auto mt-40'):
             ui.input().bind_value(self, 'data').props(
                 'outlined input-style="text-align:right"').tailwind('min-w-full')
             with ui.grid(columns=5):
-                # doesn't work yet, need to add custom operator
                 ui.button('\u221A', on_click=self.calculate_sqrt)
                 ui.button('MC')
                 ui.button('MR')
@@ -50,7 +62,8 @@ class Calculator:
                 ui.button('9', on_click=lambda: self.add_data('9'))
                 ui.button('/', on_click=lambda: self.add_data('/'))
                 # ////////////
-                ui.button('\u00B1')
+                # im not sure what is the purpose of this, it doesnt seem to change functionality in a normal calculator
+                ui.button('\u00B1', on_click=lambda: self.add_data('-'))
                 ui.button('4', on_click=lambda: self.add_data('4'))
                 ui.button('5', on_click=lambda: self.add_data('5'))
                 ui.button('6', on_click=lambda: self.add_data('6'))
