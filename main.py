@@ -13,7 +13,6 @@ class Calculator:
 
     def add_data(self, data_to_add) -> None:
         if all(x in ['*', '/', '%'] for x in [self.data[-1], data_to_add]):
-            # if self.data[-1] in ['*', '/', '%'] and data_to_add in ['*', '/', '%']:
             return
         elif self.default:
             self.data = self.data.replace('0', data_to_add)
@@ -45,16 +44,33 @@ class Calculator:
     def memory_clear(self):
         self.memory = ''
 
+    def memory_recall(self):
+        if self.memory:
+            self.add_data(self.memory)
+
+    def memory_add(self):
+        if self.memory:
+            self.memory = str(simple_eval(f'{self.memory} + {self.data}'))
+        else:
+            self.memory = str(simple_eval(f'0 + {self.data}'))
+
+    def memory_minus(self):
+        if self.memory:
+            self.memory = str(simple_eval(f'{self.memory} - {self.data}'))
+        else:
+            self.memory = str(simple_eval(f'0 - {self.data}'))
+
     def setup_gui(self) -> None:
         with ui.card().classes('flex mx-auto mt-40'):
+
             ui.input().bind_value(self, 'data').props(
                 'outlined input-style="text-align:right"').tailwind('min-w-full')
             with ui.grid(columns=5):
                 ui.button('\u221A', on_click=self.calculate_sqrt)
-                ui.button('MC')
-                ui.button('MR')
-                ui.button('M-')
-                ui.button('M+')
+                ui.button('MC', on_click=self.memory_clear)
+                ui.button('MR', on_click=self.memory_recall)
+                ui.button('M-', on_click=self.memory_minus)
+                ui.button('M+', on_click=self.memory_add)
                 # ///////////////
                 ui.button('%', on_click=lambda: self.add_data('%'))
                 ui.button('7', on_click=lambda: self.add_data('7'))
@@ -84,4 +100,4 @@ class Calculator:
 
 calculator = Calculator()
 
-ui.run(title='Calculator', dark=True)
+ui.run(title='Calculator', dark=False)
