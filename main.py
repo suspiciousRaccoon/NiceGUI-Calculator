@@ -18,7 +18,6 @@ class Calculator:
             self.default = False
         else:
             self.data += data_to_add
-        print(data_to_add, self.data)
 
     def remove_data(self, remove_all=None) -> None:
         if remove_all or len(self.data) <= 1:
