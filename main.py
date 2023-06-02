@@ -1,5 +1,5 @@
 from math import sqrt
-from nicegui import ui
+from nicegui import ui, app
 from simpleeval import simple_eval
 import ast
 
@@ -39,7 +39,6 @@ class Calculator:
     def calculate_sqrt(self):
         self.calculate()
         self.data = str(round(sqrt(self.data), 7))
-        print(self.data, type(self.data))
 
     def memory_clear(self):
         self.memory = ''
@@ -48,29 +47,29 @@ class Calculator:
         if self.memory:
             self.add_data(self.memory)
 
-    def memory_add(self):
+    def memory_modify(self, operation):
+        print(self.memory)
         if self.memory:
-            self.memory = str(simple_eval(f'{self.memory} + {self.data}'))
+            self.memory = str(simple_eval(
+                f'{self.memory} {operation} {self.data}'))
         else:
-            self.memory = str(simple_eval(f'0 + {self.data}'))
-
-    def memory_minus(self):
-        if self.memory:
-            self.memory = str(simple_eval(f'{self.memory} - {self.data}'))
-        else:
-            self.memory = str(simple_eval(f'0 - {self.data}'))
+            self.memory = str(simple_eval(f'0 {operation} {self.data}'))
+        if self.memory == '0':
+            self.memory = ''
 
     def setup_gui(self) -> None:
-        with ui.card().classes('flex mx-auto mt-40'):
 
+        with ui.card().classes('flex mx-auto mt-40'):
+            ui.icon('sim_card', color='primary').bind_visibility_from(
+                self, 'memory')
             ui.input().bind_value(self, 'data').props(
                 'outlined input-style="text-align:right"').tailwind('min-w-full')
             with ui.grid(columns=5):
                 ui.button('\u221A', on_click=self.calculate_sqrt)
                 ui.button('MC', on_click=self.memory_clear)
                 ui.button('MR', on_click=self.memory_recall)
-                ui.button('M-', on_click=self.memory_minus)
-                ui.button('M+', on_click=self.memory_add)
+                ui.button('M-', on_click=lambda: self.memory_modify('-'))
+                ui.button('M+', on_click=lambda: self.memory_modify('+'))
                 # ///////////////
                 ui.button('%', on_click=lambda: self.add_data('%'))
                 ui.button('7', on_click=lambda: self.add_data('7'))
