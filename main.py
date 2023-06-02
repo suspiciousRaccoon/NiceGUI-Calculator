@@ -1,7 +1,6 @@
 from math import sqrt
-from nicegui import ui, app
+from nicegui import ui
 from simpleeval import simple_eval
-import ast
 
 
 class Calculator:
