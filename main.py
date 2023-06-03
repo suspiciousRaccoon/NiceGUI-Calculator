@@ -20,7 +20,6 @@ class Calculator:
             self.data += data_to_add
 
     def remove_data(self, remove_all) -> None:
-        print(remove_all, len(self.data))
         if remove_all or len(self.data) <= 1:
             self.data = '0'
             self.default = True
