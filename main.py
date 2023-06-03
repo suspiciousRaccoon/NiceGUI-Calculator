@@ -19,7 +19,8 @@ class Calculator:
         else:
             self.data += data_to_add
 
-    def remove_data(self, remove_all=None) -> None:
+    def remove_data(self, remove_all) -> None:
+        print(remove_all, len(self.data))
         if remove_all or len(self.data) <= 1:
             self.data = '0'
             self.default = True
@@ -82,7 +83,7 @@ class Calculator:
                 ui.button('6', on_click=lambda: self.add_data('6'))
                 ui.button('*', on_click=lambda: self.add_data('*'))
                 # ////////////
-                ui.button('C', on_click=self.remove_data)
+                ui.button('C', on_click=lambda: self.remove_data(False))
                 ui.button('1', on_click=lambda: self.add_data('1'))
                 ui.button('2', on_click=lambda: self.add_data('2'))
                 ui.button('3', on_click=lambda: self.add_data('3'))
